@@ -12,7 +12,7 @@ provider:
   runtime: nodejs12.x
   stage: ${opt:stage, 'dev'}
   environment:
-    DB_CONNECTION_STRING: ${file(./.env):${self:provider.stage}.DB.CONNECTION_STRING}
+    DB_CONNECTION_STRING: ${file(./.env.yml):${self:provider.stage}.DB_CONNECTION_STRING}
 
 package:
  exclude:
@@ -21,10 +21,10 @@ package:
 
 functions:
   hello:
-    handler: handler.hello
+    handler: controllers/foo.getFoo
     events:
       - http:
-          path: test
+          path: foo/{fooId}
           method: get
  
 plugins:
