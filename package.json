@@ -1,0 +1,19 @@
+{
+  "name": "api-template",
+  "version": "1.0.0",
+  "description": "Basic API template with Serverless Framework, Serverless Offline, and MongoDB",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/cchapman900/api-template.git"
+  },
+  "author": "Chris Chapman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cchapman900/api-template/issues"
+  },
+  "homepage": "https://github.com/cchapman900/api-template#readme"
+}
