@@ -1,6 +1,6 @@
-service: api-template
+service: time-tourism-api
 # app and org for use with dashboard.serverless.com
-app: api-template
+app: time-tourism
 org: chrischapman900
 
 # You can pin your service to only deploy with a specific Serverless version
@@ -20,12 +20,18 @@ package:
    - docs/**
 
 functions:
-  hello:
-    handler: controllers/foo.getFoo
+  getProduct:
+    handler: controllers/product.getProduct
     events:
       - http:
-          path: foo/{fooId}
+          path: products/{productId}
           method: get
+  createProduct:
+    handler: controllers/product.createProduct
+    events:
+      - http:
+          path: products/{productId}
+          method: post
  
 plugins:
   - serverless-offline

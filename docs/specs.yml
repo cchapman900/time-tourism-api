@@ -1,105 +1,339 @@
 openapi: "3.0.0"
 info:
   version: 1.0.0
-  title: Swagger Petstore
-  license:
-    name: MIT
-servers:
-  - url: http://petstore.swagger.io/v1
+  title: Consumer Product API
+  description: An API that serves common household object data
+  contact:
+    name: Chris Chapman
+    email: chrischapman900@gmail.com
+    url: http://chrischapman.co
 paths:
-  /pets:
+  /products:
     get:
-      summary: List all pets
-      operationId: listPets
+      summary: List products
+      description: List all products, with optional search by operation
+      operationId: listProducts
       tags:
-        - pets
-      parameters:
-        - name: limit
-          in: query
-          description: How many items to return at one time (max 100)
-          required: false
-          schema:
-            type: integer
-            format: int32
+        - Product
       responses:
         '200':
-          description: A paged array of pets
-          headers:
-            x-next:
-              description: A link to the next page of responses
-              schema:
-                type: string
+          description: A paged array of Questions
           content:
-            application/json:    
+            application/json:
               schema:
-                $ref: "#/components/schemas/Pets"
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
         default:
           description: unexpected error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-    post:
-      summary: Create a pet
-      operationId: createPets
-      tags:
-        - pets
-      responses:
-        '201':
-          description: Null response
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /pets/{petId}:
-    get:
-      summary: Info for a specific pet
-      operationId: showPetById
-      tags:
-        - pets
-      parameters:
-        - name: petId
-          in: path
-          required: true
-          description: The id of the pet to retrieve
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Expected response to a valid request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Pet"
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+
 components:
   schemas:
-    Pet:
+    Product:
       type: object
-      required:
-        - id
-        - name
       properties:
-        id:
-          type: integer
-          format: int64
+        _id:
+          $ref: '#/components/schemas/ObjectId'
         name:
           type: string
-        tag:
+          example: Milk
+        specificName:
           type: string
-    Pets:
-      type: array
-      items:
-        $ref: "#/components/schemas/Pet"
-    Error:
+          example: Cow Milk
+        summary:
+          type: string
+          example: |
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque 
+            commodo pretium mauris, a malesuada nisl suscipit ac. Suspendisse 
+            at nisl urna. Aenean sollicitudin quis nulla et convallis. Morbi 
+            condimentum nulla ut enim rutrum tincidunt. Mauris orci leo, 
+            vulputate et nibh sed, bibendum efficitur magna.
+        mediaElements:
+          type: object
+          properties:
+            images:
+              type: array
+              items:
+                $ref: '#/components/schemas/MediaElement'
+            3dModels:
+              type: array
+              items:
+                $ref: '#/components/schemas/MediaElement'
+            videos:
+              type: array
+              items:
+                $ref: '#/components/schemas/MediaElement'
+        variations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Variation'
+        alternatives:
+          type: array
+          items:
+            type: object
+        standardSizes:
+          oneOf:
+            - $ref: '#/components/schemas/FoodItemSizes'
+        prices:
+          type: array
+          items:
+            $ref: '#/components/schemas/Price'
+        storage:
+          type: string
+        relatedItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObjectId'
+        specs:
+          type: array
+          items:
+            properties:
+              sizeReference:
+                $ref: '#/components/schemas/ObjectId'
+              weight:
+                type: object
+                properties:
+                  units:
+                    type: string
+                    example: 'pounds'
+                  value:
+                    type: integer
+                    example: 8.6
+              dimensions:
+                type: object
+                properties:
+                  units:
+                    type: string
+                    example: 'inches'
+                  height:
+                    type: integer
+                    example: 5.96
+                  width:
+                    type: integer
+                    example: 9.79
+        productionProcesses:
+          type: object
+          properties:
+            standard:
+              $ref: '#/components/schemas/ProductionProcess'
+            diy:
+              $ref: '#/components/schemas/ProductionProcess'
+        history:
+          type: string
+        externalLinks:
+          type: array
+          items:
+            type: string
+            
+    FoodProduct:
+      allOf:
+        - $ref: '#/components/schemas/Product'
+      properties:
+        useage:
+          type: object
+          properties:
+            straight:
+              type: array
+              items:
+                type: object
+            simple:
+              type: array
+              items:
+                type: object
+            recipes:
+              type: array
+              items:
+                type: object
+        nutritionInfo:
+          type: array
+          items:
+            $ref: '#/components/schemas/NutritionInfo'
+        shelfLife:
+          type: string
+        
+                  
+    MediaElement:
+      properties:
+        url:
+          type: string
+          example: https://www.pikfly.com/images/products/41/41059.jpg
+          
+    Variation:
+      properties:
+        _id:
+          $ref: '#/components/schemas/ObjectId'
+        name:
+          type: string
+          example: milkfat
+        description:
+          type: string
+          example: What percentage fat is in the milk
+        variants:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                $ref: '#/components/schemas/ObjectId'
+              name:
+                type: string
+                example: '2%'
+              description:
+                type: string
+            
+    FoodItemSizes:
+      properties:
+        units:
+          type: string
+          example: 'oz'
+        mostCommon:
+          type: object
+          properties:
+            individual:
+              type: string
+              description: reference to size in this object
+            family:
+              type: string
+              description: reference to size in this object
+        sizes:
+          type: array
+          items:
+            properties:
+              size:
+                type: object
+                properties:
+                  key:
+                    type: integer
+                    example: 16
+                  name:
+                    type: string
+                    example: 'pint'
+                  servings:
+                    type: integer
+                    example: 2
+    Price:
       type: object
+      properties:
+        sizeRef:
+          type: string
+        variationRef:
+          type: string
+        price:
+          type: number
+          example: 3.50
+      
+    NutritionInfo:
+      type: object
+      properties:
+        variationRef:
+          type: string
+        calories:
+          type: integer
+          example: 120
+        fat:
+          type: integer
+          example: 6
+        sugars:
+          type: integer
+          example: 4
+          
+    Meals:
+      type: object
+      properties:
+        name:
+          type: string
+        foodItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/FoodProduct'
+        recipes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Recipe'
+    
+    Recipe:
+      type: object
+      properties:
+        name:
+          type: string
+        servings:
+          type: integer
+        ingredients:
+          type: array
+          items:
+            properties:
+              unit:
+                type: string
+                example: 'cups'
+              ammount:
+                type: number
+                example: 1
+              ingredient:
+                $ref: '#/components/schemas/FoodProduct'
+        steps:
+          type: array
+          items:
+            type: string
+    
+    ProductionProcess:
+      type: object
+      properties:
+        name: 
+          type: string
+          example: Pasteurization
+        steps:
+          type: array
+          items:
+            type: object
+        components:
+          type: array
+          items:
+            type: object
+        byproducts:
+          type: array
+          items:
+            type: string
+        science:
+          type: array
+          items:
+            type: object
+        history:
+          type: string
+        mediaLinks:
+          type: array
+          items:
+            properties:
+              name:
+                type: string
+                example: "How It's Made"
+              link:
+                type: string
+                example: 'https://www.youtube.com/watch?v=4DxK4yYSEZ4'
+          
+    ProductionTechnique:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Net fishing
+    
+    Industry:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Agriculture
+            
+    ObjectId:
+      type: string
+      format: ObjectId
+      example: '5f7680f0cecc6b4d0b7556e9'
+  
+    Error:
       required:
         - code
         - message

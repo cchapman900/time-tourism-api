@@ -11,12 +11,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{domain}}/foo/1",
+					"raw": "{{domain}}/product/1",
 					"host": [
 						"{{domain}}"
 					],
 					"path": [
-						"foo",
+						"product",
 						"1"
 					]
 				}
